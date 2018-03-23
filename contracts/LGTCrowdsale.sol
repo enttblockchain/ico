@@ -12,11 +12,13 @@ contract LGTCrowdsale is LGTCappedCrowdsale, LGTFinalizableCrowdsale {
     using SafeMath for uint256;
 
     LGTToken public tokens;
-    uint8 public constant SERVICE_FEE = 2;
+    uint8 public constant SERVICE_FEE = 0; // TBD
     uint8 public constant DECIMAL = 18;
     uint256 public etherPrice;
-    uint256 public minUSD = 100 * 10 ** 18;
-    uint256 public maxUSD = 10000 * 10 ** 18;
+
+    uint256 public minUSD = 0 // minimum investment amount TBD
+    uint256 public maxUSD = 0 // maximum investment amount TBD
+
     uint256 public distributeTokenCountComplete;
 
     EtherOraclizeService etherOraclizeService;
