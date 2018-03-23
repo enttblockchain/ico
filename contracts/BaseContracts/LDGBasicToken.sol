@@ -3,7 +3,7 @@ pragma solidity 0.4.19;
 import '../../node_modules/zeppelin-solidity/contracts/token/ERC827/ERC827Token.sol';
 import '../../node_modules/zeppelin-solidity/contracts/ownership/Claimable.sol';
 
-contract LGTBasicToken is ERC827Token, Claimable {
+contract LDGBasicToken is ERC827Token, Claimable {
     mapping (address => bool) public isHolder;
     address[] public holders;
 

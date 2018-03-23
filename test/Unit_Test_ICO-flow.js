@@ -9,8 +9,8 @@ import EVMRevert from './helpers/EVMRevert';
 import EVMInvalidAddress from './helpers/EVMInvalidAddress';
 import EVMThrow from './helpers/EVMThrow';
 
-const LGTCrowdsale = artifacts.require("LGTCrowdsale");
-const LGTToken = artifacts.require("LGTToken");
+const LDGCrowdsale = artifacts.require("LDGCrowdsale");
+const LDGToken = artifacts.require("LDGToken");
 const EtherOraclizeService = artifacts.require("EtherOraclizeService");
 const BigNumber = web3.BigNumber;
 
@@ -20,7 +20,7 @@ require('chai')
     .should();
 
 let timeoutDuration = 0;
-contract('LGTCrowdsale', function (accounts) {
+contract('LDGCrowdsale', function (accounts) {
     let currentTime = web3.eth.getBlock('latest').timestamp;
     let sInst;
     let sAddress;
@@ -55,31 +55,31 @@ contract('LGTCrowdsale', function (accounts) {
     let tokenInst;
     let oraclizeInst;
 
-    it('UNIT TESTS - LGTCrowdsale - Test Case 01: LGTCrowdsale is deployed', async function () {
+    it('UNIT TESTS - LDGCrowdsale - Test Case 01: LDGCrowdsale is deployed', async function () {
         currentTime = web3.eth.getBlock('latest').timestamp;
         sStartTime = currentTime + oneDay ;
         sEndTime = sStartTime + 2 * oneMonth;
 
-        tokenInst = await LGTToken.new({from: acctFour});
+        tokenInst = await LDGToken.new({from: acctFour});
         oraclizeInst = await EtherOraclizeService.new({from: acctFour, value: twoEther });
 
-        sInst = await LGTCrowdsale.new(sStartTime, sEndTime, saleCap, acctEight, tokenInst.address, oraclizeInst.address, {from: acctOne});
+        sInst = await LDGCrowdsale.new(sStartTime, sEndTime, saleCap, acctEight, tokenInst.address, oraclizeInst.address, {from: acctOne});
 
         // Should not be null, if success deployed
         assert.isNotNull(sInst,
             '\n     ' +
-            'UNIT TESTS - LGTCROWDSALE - TEST CASE 02: Test #1\n      ' +
-            'TEST DESCRIPTION: LGTCrowsale not initialized\n      ' +
+            'UNIT TESTS - LDGCROWDSALE - TEST CASE 02: Test #1\n      ' +
+            'TEST DESCRIPTION: LDGCrowsale not initialized\n      ' +
             'EXPECTED RESULT: not null\n      ' +
             'ACTUAL RESULT: is ' + sInst);
     }).timeout(timeoutDuration);
 
-    it('UNIT TESTS - LGTCrowdsale - Test Case 02: Test buyTokens() before ICO start.', async function(){
+    it('UNIT TESTS - LDGCrowdsale - Test Case 02: Test buyTokens() before ICO start.', async function(){
         await sInst.setWhiteList(acctTwo, {from: acctOne});
         await sInst.buyTokens(acctTwo, {from: acctTwo, value: sendEther}).should.be.rejectedWith(EVMRevert);
     }).timeout(timeoutDuration);
 
-    it('UNIT TESTS - LGTCrowdsale - Test Case 03: Test buyTokens() after ICO end.', async function(){
+    it('UNIT TESTS - LDGCrowdsale - Test Case 03: Test buyTokens() after ICO end.', async function(){
         let etherPrice;
 
         const eventBuyTokenCaseOne = sInst.LogTokenPurchase(function(error, result) {
@@ -91,7 +91,7 @@ contract('LGTCrowdsale', function (accounts) {
                 let logResult = result.args;
                 assert.equal(sendEther, logResult._value.toNumber(),
                     '\n     ' +
-                    'UNIT TESTS - LGTCROWDSALE - TEST CASE 10: Shoud Log 2 ether after purchase\n      ' +
+                    'UNIT TESTS - LDGCROWDSALE - TEST CASE 10: Shoud Log 2 ether after purchase\n      ' +
                     'TEST DESCRIPTION: Buy Token is called\n      ' +
                     'EXPECTED RESULT: ' + sendEther + '\n      ' +
                     'ACTUAL RESULT: is ' + logResult._value.toNumber());

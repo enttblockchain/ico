@@ -1,13 +1,13 @@
 pragma solidity 0.4.19;
 
 import '../../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
-import './LGTBasicToken.sol';
+import './LDGBasicToken.sol';
 
 contract MigrationAgent {
     function migrateFrom(address from, uint256 value) public returns (bool);
 }
 
-contract LGTMigratableToken is LGTBasicToken {
+contract LDGMigratableToken is LDGBasicToken {
     using SafeMath for uint256;
 
     address public migrationAgent;

@@ -1,13 +1,13 @@
-/// @file LGT Finalizable Crowdsale Contract
-/// @notice LGT Finalizable Crowdsale Contract is based on Open Zeppelin
-//// and extend LGT Base Crowdsale
+/// @file LDG Finalizable Crowdsale Contract
+/// @notice LDG Finalizable Crowdsale Contract is based on Open Zeppelin
+//// and extend LDG Base Crowdsale
 pragma solidity 0.4.19;
 
 import '../../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
 import '../../node_modules/zeppelin-solidity/contracts/ownership/Claimable.sol';
-import './LGTBaseCrowdsale.sol';
+import './LDGBaseCrowdsale.sol';
 
-contract LGTFinalizableCrowdsale is LGTBaseCrowdsale, Claimable {
+contract LDGFinalizableCrowdsale is LDGBaseCrowdsale, Claimable {
     using SafeMath for uint256;
 
     bool public isFinalized = false;
@@ -15,7 +15,7 @@ contract LGTFinalizableCrowdsale is LGTBaseCrowdsale, Claimable {
     event Closed();
     event Finalized();
 
-    function LGTFinalizableCrowdsale() {
+    function LDGFinalizableCrowdsale() {
     }
 
     function finalize() onlyOwner public {

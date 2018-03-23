@@ -1,17 +1,17 @@
-/// @file LGT Crowdsale Contract
+/// @file LDG Crowdsale Contract
 pragma solidity 0.4.19;
 
 import '../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
 
-import './BaseContracts/LGTCappedCrowdsale.sol';
-import './BaseContracts/LGTFinalizableCrowdsale.sol';
-import './LGTToken.sol';
+import './BaseContracts/LDGCappedCrowdsale.sol';
+import './BaseContracts/LDGFinalizableCrowdsale.sol';
+import './LDGToken.sol';
 import './EtherOraclizeService.sol';
 
-contract LGTCrowdsale is LGTCappedCrowdsale, LGTFinalizableCrowdsale {
+contract LDGCrowdsale is LDGCappedCrowdsale, LDGFinalizableCrowdsale {
     using SafeMath for uint256;
 
-    LGTToken public tokens;
+    LDGToken public tokens;
     uint8 public constant SERVICE_FEE = 0; // TBD
     uint8 public constant DECIMAL = 18;
     uint256 public etherPrice;
@@ -32,7 +32,7 @@ contract LGTCrowdsale is LGTCappedCrowdsale, LGTFinalizableCrowdsale {
 
     struct InvestorStruct {
         bool approve;
-        uint256 lgtToken;
+        uint256 ldgToken;
     }
 
     mapping(address => InvestorStruct) private Investor; // Manages the mapping between address
@@ -41,7 +41,7 @@ contract LGTCrowdsale is LGTCappedCrowdsale, LGTFinalizableCrowdsale {
 
     event LogEtherToToken(uint tokenAmount);
     event LogWhiteList(address whitelisted);
-    event LogAddressMigration(address oldAddress, address newAddress, uint256 newLgtToken);
+    event LogAddressMigration(address oldAddress, address newAddress, uint256 newLdgToken);
 
     /**
      * Only allowed whitelisted investor
@@ -51,16 +51,16 @@ contract LGTCrowdsale is LGTCappedCrowdsale, LGTFinalizableCrowdsale {
         _;
     }
 
-    function LGTCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _cap, address _wallet, address _token, address _oraclize) public payable
-    LGTBaseCrowdsale(_startTime, _endTime, _wallet)
-    LGTFinalizableCrowdsale()
-    LGTCappedCrowdsale(_cap)
+    function LDGCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _cap, address _wallet, address _token, address _oraclize) public payable
+    LDGBaseCrowdsale(_startTime, _endTime, _wallet)
+    LDGFinalizableCrowdsale()
+    LDGCappedCrowdsale(_cap)
     {
         require(_token != address(0x0));
         require(_oraclize != address(0x0));
 
         etherOraclizeService = EtherOraclizeService(_oraclize);
-        tokens = LGTToken(_token);
+        tokens = LDGToken(_token);
 
         getCurrentEtherPrice();
 
@@ -94,7 +94,7 @@ contract LGTCrowdsale is LGTCappedCrowdsale, LGTFinalizableCrowdsale {
         require(_investor != address(0x0));
 
         uint tier;
-        uint256 investorLGTtoken;
+        uint256 investorLDGtoken;
         uint256 investorUSD;
         uint256 withinFirstDay;
 
@@ -104,10 +104,10 @@ contract LGTCrowdsale is LGTCappedCrowdsale, LGTFinalizableCrowdsale {
         require(tier > 0);
         require(etherPrice > 0);
 
-        investorLGTtoken = calculatePrice(msg.value, etherPrice, SERVICE_FEE, Tier[tier].tokenPrice, DECIMAL);
+        investorLDGtoken = calculatePrice(msg.value, etherPrice, SERVICE_FEE, Tier[tier].tokenPrice, DECIMAL);
         investorUSD = etherToUSD(msg.value, etherPrice, DECIMAL);
 
-        require(investorLGTtoken > 0);
+        require(investorLDGtoken > 0);
         require(investorUSD > 0);
 
         if (tier == 4) {
@@ -124,15 +124,15 @@ contract LGTCrowdsale is LGTCappedCrowdsale, LGTFinalizableCrowdsale {
             require(investorUSD > maxUSD);
         }
 
-        require(validPurchase(investorLGTtoken, Tier[tier].tokenCap));
+        require(validPurchase(investorLDGtoken, Tier[tier].tokenCap));
 
         // update token raised state
-        tokenRaised = tokenRaised.add(investorLGTtoken);
+        tokenRaised = tokenRaised.add(investorLDGtoken);
 
         // Get "Total Supply" token investedEther, and minus the remainning token value
-        Investor[_investor].lgtToken += investorLGTtoken;
+        Investor[_investor].ldgToken += investorLDGtoken;
 
-        LogTokenPurchase(txCount, 0x0, _investor, msg.value, investorLGTtoken, Tier[tier].tokenPrice);
+        LogTokenPurchase(txCount, 0x0, _investor, msg.value, investorLDGtoken, Tier[tier].tokenPrice);
 
         forwardFunds();
 
@@ -163,7 +163,7 @@ contract LGTCrowdsale is LGTCappedCrowdsale, LGTFinalizableCrowdsale {
     }
 
     /**
-     * LGTPricing#calculatePrice
+     * LDGPricing#calculatePrice
      *
      * When somebody tries to buy tokens for X eth, calculate how many tokens they get.
      *
@@ -258,15 +258,15 @@ contract LGTCrowdsale is LGTCappedCrowdsale, LGTFinalizableCrowdsale {
         onlyWhiteList(_oldWallet)
     {
         require(_newWallet != address(0));
-        require(Investor[_newWallet].lgtToken == 0);
+        require(Investor[_newWallet].ldgToken == 0);
 
         Investor[_newWallet].approve = Investor[_oldWallet].approve;
-        Investor[_newWallet].lgtToken = Investor[_oldWallet].lgtToken;
+        Investor[_newWallet].ldgToken = Investor[_oldWallet].ldgToken;
 
         whitelists.push(_newWallet);
 
         delete Investor[_oldWallet];
-        LogAddressMigration(_oldWallet, _newWallet, Investor[_newWallet].lgtToken);
+        LogAddressMigration(_oldWallet, _newWallet, Investor[_newWallet].ldgToken);
     }
 
     /**
@@ -290,8 +290,8 @@ contract LGTCrowdsale is LGTCappedCrowdsale, LGTFinalizableCrowdsale {
         for (uint256 index = distributeTokenCountComplete; index < count; index++) {
             _to = whitelists[index];
             if (Investor[_to].approve == true) {
-                tokens.transferFrom(owner, _to, Investor[_to].lgtToken);
-                Investor[_to].lgtToken = 0;
+                tokens.transferFrom(owner, _to, Investor[_to].ldgToken);
+                Investor[_to].ldgToken = 0;
             }
         }
 

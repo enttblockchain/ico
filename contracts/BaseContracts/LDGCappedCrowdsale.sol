@@ -1,19 +1,19 @@
 pragma solidity 0.4.19;
 
 import '../../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
-import './LGTBaseCrowdsale.sol';
+import './LDGBaseCrowdsale.sol';
 
-contract LGTCappedCrowdsale is LGTBaseCrowdsale {
+contract LDGCappedCrowdsale is LDGBaseCrowdsale {
     using SafeMath for uint256;
 
     uint256 public cap;
 
-    function LGTCappedCrowdsale(uint256 _cap) public {
+    function LDGCappedCrowdsale(uint256 _cap) public {
         require(_cap > 0);
         cap = _cap;
     }
 
-    // Override LGTBaseCrowdsale#validPurchase to add cap logic
+    // Override LDGBaseCrowdsale#validPurchase to add cap logic
     // @return true if investors can buy at the moment
     function validPurchase(uint256 tokenPurchased, uint256 tierCap) internal view returns (bool) {
         bool withinTierCap = tokenRaised.add(tokenPurchased) <= tierCap;
@@ -21,7 +21,7 @@ contract LGTCappedCrowdsale is LGTBaseCrowdsale {
     }
 
 
-    // Override LGTBaseCrowdsale#hasEnded to add cap logic
+    // Override LDGBaseCrowdsale#hasEnded to add cap logic
     // @return true if crowdsale event has ended
     function hasEnded() public view returns (bool) {
         bool capReached = tokenRaised >= cap;

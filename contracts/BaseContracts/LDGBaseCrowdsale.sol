@@ -1,11 +1,11 @@
-/// @file LGT Base Crowdsale Contract
-/// @notice LGT Base Crowdsale Contract is base on Open Zeppelin
+/// @file LDG Base Crowdsale Contract
+/// @notice LDG Base Crowdsale Contract is base on Open Zeppelin
 /// and modified
 pragma solidity 0.4.19;
 
 import '../../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
 
-contract LGTBaseCrowdsale {
+contract LDGBaseCrowdsale {
     using SafeMath for uint256;
 
     uint256 public startTime;
@@ -25,7 +25,7 @@ contract LGTBaseCrowdsale {
      */
     event LogTokenPurchase(uint256 indexed _count, address indexed _purchaser, address indexed _beneficiary, uint256 _value, uint256 _amount, uint256 _tokenPrice);
 
-    function LGTBaseCrowdsale(uint256 _startTime, uint _endTime, address _wallet) public {
+    function LDGBaseCrowdsale(uint256 _startTime, uint _endTime, address _wallet) public {
         require(_startTime >= now);
         require(_endTime >= _startTime);
         require(_wallet != address(0));

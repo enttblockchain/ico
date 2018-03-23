@@ -1,12 +1,12 @@
-/// @file LGT Mintable Token Contract
-/// @notice LGT Mintable Token Contract is based on Open Zeppelin
+/// @file LDG Mintable Token Contract
+/// @notice LDG Mintable Token Contract is based on Open Zeppelin
 /// and modified
 
 pragma solidity 0.4.19;
 
-import './LGTBasicToken.sol';
+import './LDGBasicToken.sol';
 
-contract LGTMintableToken is LGTBasicToken {
+contract LDGMintableToken is LDGBasicToken {
     event Mint(address indexed to, uint256 amount);
     event MintFinished();
 

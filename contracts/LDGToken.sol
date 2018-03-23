@@ -3,16 +3,16 @@ pragma solidity 0.4.19;
 // ----------------------------------------------------------------------------
 // Ledgit token contract
 //
-// Symbol : LGT
+// Symbol : LDG
 // Name : Ledgit Token
 // Total supply : 1,500,000,000.000000000000000000
 // Decimals : 18
 //
 // ----------------------------------------------------------------------------
 
-import './BaseContracts/LGTMintableToken.sol';
-import './BaseContracts/LGTBurnableToken.sol';
-import './BaseContracts/LGTMigratableToken.sol';
+import './BaseContracts/LDGMintableToken.sol';
+import './BaseContracts/LDGBurnableToken.sol';
+import './BaseContracts/LDGMigratableToken.sol';
 
 contract SDAToken is SDAMintableToken, SDABurnableToken, SDAMigratableToken {
     string public name;

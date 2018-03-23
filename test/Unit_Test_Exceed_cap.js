@@ -9,8 +9,8 @@ import EVMRevert from './helpers/EVMRevert';
 import EVMInvalidAddress from './helpers/EVMInvalidAddress';
 import EVMThrow from './helpers/EVMThrow';
 
-const LGTCrowdsale = artifacts.require("LGTCrowdsale");
-const LGTToken = artifacts.require("LGTToken");
+const LDGCrowdsale = artifacts.require("LDGCrowdsale");
+const LDGToken = artifacts.require("LDGToken");
 const EtherOraclizeService = artifacts.require("EtherOraclizeService");
 const BigNumber = web3.BigNumber;
 
@@ -20,7 +20,7 @@ require('chai')
     .should();
 
 
-contract('LGTCrowdsale', function(accounts) {
+contract('LDGCrowdsale', function(accounts) {
     let currentTime = web3.eth.getBlock('latest').timestamp;
     let acctOne = accounts[0];
     let acctTwo = accounts[1];
@@ -59,16 +59,16 @@ contract('LGTCrowdsale', function(accounts) {
     // Tier[4].tokenCap = 1200000 * 10 ** 18;
 
 
-    it('UNIT TESTS - LGTCrowdsale - Test Case 15: Buy Token-Test Valid Purchase (ethers exceed cap amount)', async function() {
+    it('UNIT TESTS - LDGCrowdsale - Test Case 15: Buy Token-Test Valid Purchase (ethers exceed cap amount)', async function() {
         let sendEther = web3.toWei(20, 'ether');
         let etherPrice;
 
         sStartTime = web3.eth.getBlock('latest').timestamp + oneDayTS;
         sEndTime = sStartTime + oneMonthTS * 2;
 
-        tokenInst = await LGTToken.new({from: acctFour});
+        tokenInst = await LDGToken.new({from: acctFour});
         oraclizeInst = await EtherOraclizeService.new({from: acctFour});
-        sInst = await LGTCrowdsale.new(sStartTime, sEndTime, saleCap, acctEight, tokenInst.address, oraclizeInst.address, {from: acctFour});
+        sInst = await LDGCrowdsale.new(sStartTime, sEndTime, saleCap, acctEight, tokenInst.address, oraclizeInst.address, {from: acctFour});
 
         await sInst.setWhiteList(acctSix, {from: acctFour}).should.not.be.rejectedWith(EVMRevert);
         await sInst.setWhiteList(acctThree, {from: acctFour}).should.not.be.rejectedWith(EVMRevert);
