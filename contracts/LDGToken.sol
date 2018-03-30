@@ -14,12 +14,12 @@ import './BaseContracts/LDGMintableToken.sol';
 import './BaseContracts/LDGBurnableToken.sol';
 import './BaseContracts/LDGMigratableToken.sol';
 
-contract SDAToken is SDAMintableToken, SDABurnableToken, SDAMigratableToken {
+contract LDGToken is LDGMintableToken, LDGBurnableToken, LDGMigratableToken {
     string public name;
     string public symbol;
     uint8 public decimals;
 
-    function SDAToken() public {
+    function LDGToken() public {
         name = "Ledgit";
         symbol = "LDG";
         decimals = 18;
