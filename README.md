@@ -1,4 +1,4 @@
-# Ledgit ICO Smart Contract
+# SEDA PRE ICO Smart Contract
 
 ## ToDo
 ___

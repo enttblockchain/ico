@@ -1,10 +1,10 @@
-let oraclize = artifacts.require('EtherOraclizeService');
+let oraclize = artifacts.require('MockOraclizeService');
 
 let timeoutDuration = 0;
-contract('EtherOraclizeService', function() {
+contract('MockOraclizeService', function() {
     let sInstOraclize;
 
-    it("UNIT TESTS - EtherOraclizeService - Test Case 00: Can Deploy EtherOraclizeService", function (done) {
+    it("UNIT TESTS - MockOraclizeService - Test Case 00: Can Deploy MockOraclizeService", function (done) {
         sInstOraclize = oraclize.new();
 
         var oraclizeIsDeployed = oraclize.isDeployed();
@@ -12,7 +12,7 @@ contract('EtherOraclizeService', function() {
         done();
     }).timeout(timeoutDuration);
 
-    // it("UNIT TEST - EtherOraclizeService - Test Case 01: Get Ether price in USD", async function () {
+    // it("UNIT TEST - MockOraclizeService - Test Case 01: Get Ether price in USD", async function () {
     //     const evtWatcher = sInstOraclize.EvtEtherPrice(function (error, result) {
     //         if (error) {
     //             console.error(error);

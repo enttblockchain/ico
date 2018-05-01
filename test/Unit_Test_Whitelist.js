@@ -9,9 +9,9 @@ import EVMRevert from './helpers/EVMRevert';
 import EVMInvalidAddress from './helpers/EVMInvalidAddress';
 import EVMThrow from './helpers/EVMThrow';
 
-const LDGCrowdsale = artifacts.require("LDGCrowdsale");
-const LDGToken = artifacts.require("LDGToken");
-const EtherOraclizeService = artifacts.require("EtherOraclizeService");
+const SDACrowdsale = artifacts.require("SDACrowdsale");
+const SDAToken = artifacts.require("SDAToken");
+const MockOraclizeService = artifacts.require("MockOraclizeService");
 const BigNumber = web3.BigNumber;
 
 require('chai')
@@ -20,7 +20,7 @@ require('chai')
     .should();
 
 
-contract('LDGCrowdsale', function(accounts) {
+contract('SDACrowdsale', function(accounts) {
     let currentTime = web3.eth.getBlock('latest').timestamp;
     let acctOne = accounts[0];
     let acctTwo = accounts[1];
@@ -42,15 +42,15 @@ contract('LDGCrowdsale', function(accounts) {
     let tokenInst;
     let oraclizeInst;
 
-    it('UNIT TESTS - LDGCrowdsale - Test Case 01: Test Set WhiteList by using invalid account (Failed Cases)', async function() {
+    it('UNIT TESTS - SDACrowdsale - Test Case 01: Test Set WhiteList by using invalid account (Failed Cases)', async function() {
         currentTime = web3.eth.getBlock('latest').timestamp;
         sStartTime = currentTime + oneDayTS;
         sEndTime = sStartTime + oneMonthTS;
 
-        tokenInst = await LDGToken.new({from: acctFour});
-        oraclizeInst = await EtherOraclizeService.new({from: acctFour});
+        tokenInst = await SDAToken.new({from: acctFour});
+        oraclizeInst = await MockOraclizeService.new({from: acctFour});
 
-        sInst = await LDGCrowdsale.new(sStartTime, sEndTime, saleCap, acctThree, tokenInst.address, oraclizeInst.address, {from: acctFour});
+        sInst = await SDACrowdsale.new(sStartTime, sEndTime, saleCap, acctThree, tokenInst.address, oraclizeInst.address, {from: acctFour});
         await sInst.setWhiteList(acctOne, {from: invalidAcct}).should.be.rejectedWith(EVMInvalidAddress);
 
     }).timeout(timeoutDuration);
@@ -68,7 +68,7 @@ contract('LDGCrowdsale', function(accounts) {
       }
     ];
 
-    it('UNIT TESTS - LDGCrowdsale - Test Case 02: Test Set WhiteList with not whitelisted accounts (Success Cases)', async function() {
+    it('UNIT TESTS - SDACrowdsale - Test Case 02: Test Set WhiteList with not whitelisted accounts (Success Cases)', async function() {
 
       for (let index = 0; index < totalIndex; index++){
         const element = accountIndex[index];
@@ -81,7 +81,7 @@ contract('LDGCrowdsale', function(accounts) {
                       let actualInvestor = result.args.whitelisted;
                       assert.equal(actualInvestor, element.account,
                           '\n     ' +
-                          'UNIT TESTS - LDGCROWDSALE - TEST CASE 02: Test #' + '\n      ' +
+                          'UNIT TESTS - SDACROWDSALE - TEST CASE 02: Test #' + '\n      ' +
                           'TEST DESCRIPTION: SetWhiteList and getwhiteListByIndex is called\n      ' +
                           'EXPECTED RESULT: ' + element.account + '\n      ' +
                           'ACTUAL RESULT: is ' + actualInvestor);
@@ -92,7 +92,7 @@ contract('LDGCrowdsale', function(accounts) {
           }
     }).timeout(timeoutDuration);
 
-    it('UNIT TESTS - LDGCrowdsale - Tests Case 03: Test Get WhiteList with not whitelisted account (Failed Cases)', async function(){
+    it('UNIT TESTS - SDACrowdsale - Tests Case 03: Test Get WhiteList with not whitelisted account (Failed Cases)', async function(){
         await sInst.getwhiteListByIndex(2).should.be.rejectedWith(EVMRevert);
     }).timeout(timeoutDuration);
 

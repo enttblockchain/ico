@@ -6,8 +6,8 @@ const HDWalletProvider = require("truffle-hdwallet-provider");
 
 // const filePath = '/home/john/Documents/EthData/MetaMask\ Seed\ Words';
 // const encoding = 'utf-8';
-let mnemonic = '';
-
+let mnemonic = 'loud gossip someone alone spirit vivid rural fat gain art swarm lab';
+// let mnemonic = 'foot push slight pencil second exist initial fury elevator oyster fit awake';
 // fs.readFile(filePath, encoding, function(err, data) {
 //   if (!err) {
 //     mnemonic = data;
@@ -37,7 +37,13 @@ module.exports = {
       host: "localhost",
       port: 8545,
       network_id: "*",
-      gas: 6000000
+      // gas: 6000000
+      gas: 4612388
+    },
+    development: {
+      host: process.env.RPC_HOST || "localhost",
+      port: 8545,
+      network_id: "*", // Match any network id
     },
     rinkeby: {
       host: "localhost",
@@ -48,9 +54,16 @@ module.exports = {
     },
     ropsten: {
       provider: function() {
-        return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/DTcDoW9ioMK8TORBeG4F");
+        return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/RWBWZlgokn2m5P9odvlk");
       },
       network_id: 3,
+      gas: 4612388
+    },
+    live: {
+      provider: function() {
+        return new HDWalletProvider(mnemonic, "https://mainnet.infura.io/RWBWZlgokn2m5P9odvlk");
+      },
+      network_id: 1,
       gas: 4612388
     }
   },

@@ -6,9 +6,9 @@ import EVMInvalidAddress from './helpers/EVMInvalidAddress';
 import EVMThrow from './helpers/EVMThrow';
 import { increaseTimeTo } from './helpers/increaseTime';
 
-const LDGCrowdsale = artifacts.require("LDGCrowdsale");
-const LDGToken = artifacts.require("LDGToken");
-const EtherOraclizeService = artifacts.require("EtherOraclizeService");
+const SDACrowdsale = artifacts.require("SDACrowdsale");
+const SDAToken = artifacts.require("SDAToken");
+const MockOraclizeService = artifacts.require("MockOraclizeService");
 const BigNumber = web3.BigNumber;
 
 require('chai')
@@ -17,7 +17,7 @@ require('chai')
     .should();
 
 let timeoutDuration = 0;
-contract('LDGCrowdsale', function (accounts) {
+contract('SDACrowdsale', function (accounts) {
     let currentTime = web3.eth.getBlock('latest').timestamp;
     let sInst;
     let acctOne = accounts[0];
@@ -47,14 +47,14 @@ contract('LDGCrowdsale', function (accounts) {
 
     let wallet = acctEight;
 
-    it('UNIT TESTS - LDGCrowdsale - Test Case 01: SetEndTime will revert with incorrect variable', async function () {
+    it('UNIT TESTS - SDACrowdsale - Test Case 01: SetEndTime will revert with incorrect variable', async function () {
         sStartTime = currentTime + 120; // start after 120 seconds/2 minutes
         sEndTime = sStartTime + oneMonth;
 
-        oraclizeInst = await EtherOraclizeService.new({from: acctFour, value: oneEther});
-        tokenInst = await LDGToken.new({from: acctFour});
+        oraclizeInst = await MockOraclizeService.new({from: acctFour, value: oneEther});
+        tokenInst = await SDAToken.new({from: acctFour});
 
-        sInst = await LDGCrowdsale.new(sStartTime, sEndTime, sTokenCap, wallet, tokenInst.address, oraclizeInst.address, {from: acctFour});
+        sInst = await SDACrowdsale.new(sStartTime, sEndTime, sTokenCap, wallet, tokenInst.address, oraclizeInst.address, {from: acctFour});
 
         // Should fail to set end time to a timestamp before Crowdsale start.
         let beforeStartTime = sStartTime - oneDay;
@@ -69,7 +69,7 @@ contract('LDGCrowdsale', function (accounts) {
         await sInst.setEndTime(twoDaysAfterStartCrowdsale).should.be.rejectedWith(EVMRevert);
     }).timeout(timeoutDuration);
 
-    it('UNIT TESTS - LDGCrowdsale - Test Case 01: SetEndTime with correct variable', async function () {
+    it('UNIT TESTS - SDACrowdsale - Test Case 01: SetEndTime with correct variable', async function () {
         // extend Crowdsale to another 10 days
         let extendedEndTime = sEndTime + (10 * oneDay);
         await sInst.setEndTime(extendedEndTime, {from: acctFour});
@@ -77,7 +77,7 @@ contract('LDGCrowdsale', function (accounts) {
         let actualExtendedTimestamp = await sInst.endTime.call();
         assert.equal(actualExtendedTimestamp, extendedEndTime,
             '\n      ' +
-            'UNIT TESTS - LDGCROWDSALE - TEST CASE 01: Test #1\n      ' +
+            'UNIT TESTS - SDACROWDSALE - TEST CASE 01: Test #1\n      ' +
             'TEST DESCRIPTION: Success extend Crowdsale\'s ending timestamp\n      ' +
             'EXPECTED RESULT: ' + extendedEndTime + '\n      ' +
             'ACTUAL RESULT: is ' + actualExtendedTimestamp);

@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+  truffle:
+    build: .
+    links:
+      - ganache
+    environment:
+      - RPC_HOST=ganache
+    volumes:
+      - .:/usr/src/app
+  ganache:
+    image: trufflesuite/ganache-cli:latest
+    ports:
+      - '8545:8545'
+  # geth:
+  #   image: ethereum/client-go
+  # solc:
+  #   image: ethereum/solc:stable
+  #   volumes:
+  #     - .:/workdir
+  yarn:
+   image: "kkarczmarczyk/node-yarn:8.0"
+   volumes:
+     - .:/workspace

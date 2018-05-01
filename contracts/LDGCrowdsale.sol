@@ -6,22 +6,17 @@ import '../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
 import './BaseContracts/LDGCappedCrowdsale.sol';
 import './BaseContracts/LDGFinalizableCrowdsale.sol';
 import './LDGToken.sol';
-import './EtherOraclizeService.sol';
 
 contract LDGCrowdsale is LDGCappedCrowdsale, LDGFinalizableCrowdsale {
     using SafeMath for uint256;
 
     LDGToken public tokens;
-    uint8 public constant SERVICE_FEE = 0; // TBD
+    uint8 public constant SERVICE_FEE = 2;
     uint8 public constant DECIMAL = 18;
     uint256 public etherPrice;
-
-    uint256 public minUSD = 0 // minimum investment amount TBD
-    uint256 public maxUSD = 0 // maximum investment amount TBD
-
+    uint256 public minUSD = 100 * 10 ** 18;
+    uint256 public maxUSD = 10000 * 10 ** 18;
     uint256 public distributeTokenCountComplete;
-
-    EtherOraclizeService etherOraclizeService;
 
     struct Phase {
         uint256 firstDay;
@@ -51,18 +46,16 @@ contract LDGCrowdsale is LDGCappedCrowdsale, LDGFinalizableCrowdsale {
         _;
     }
 
-    function LDGCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _cap, address _wallet, address _token, address _oraclize) public payable
+    function LDGCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _cap, uint256 _etherPrice, address _wallet, address _token) public payable
     LDGBaseCrowdsale(_startTime, _endTime, _wallet)
     LDGFinalizableCrowdsale()
     LDGCappedCrowdsale(_cap)
     {
         require(_token != address(0x0));
-        require(_oraclize != address(0x0));
 
-        etherOraclizeService = EtherOraclizeService(_oraclize);
         tokens = LDGToken(_token);
 
-        getCurrentEtherPrice();
+        etherPrice = _etherPrice;
 
         Tier[1].firstDay = _startTime;
         Tier[1].endDay = _startTime + 2 days;
@@ -99,7 +92,6 @@ contract LDGCrowdsale is LDGCappedCrowdsale, LDGFinalizableCrowdsale {
         uint256 withinFirstDay;
 
         tier = getCurrentTier();
-        getCurrentEtherPrice();
 
         require(tier > 0);
         require(etherPrice > 0);
@@ -143,7 +135,7 @@ contract LDGCrowdsale is LDGCappedCrowdsale, LDGFinalizableCrowdsale {
         return whitelists.length;
     }
 
-    function  getwhiteListByIndex(uint _index) public returns (address, bool) {
+    function  getwhiteListByIndex(uint _index) public view returns (address, bool) {
         require(_index < whitelists.length);
 
         address addr = whitelists[_index];
@@ -160,6 +152,10 @@ contract LDGCrowdsale is LDGCappedCrowdsale, LDGFinalizableCrowdsale {
             return true;
         }
         return false;
+    }
+
+    function setEtherPrice(uint256 _etherPrice) public onlyOwner {
+      etherPrice = _etherPrice;
     }
 
     /**
@@ -249,6 +245,14 @@ contract LDGCrowdsale is LDGCappedCrowdsale, LDGFinalizableCrowdsale {
         }
     }
 
+    function isWhitelisted(address _sender) public view returns(string) {
+        if (Investor[_sender].approve) {
+          return "Yes";
+        } else {
+          return "No";
+        }
+    }
+
     /**
      * @notice Migrate wallet address of whitelist
      */
@@ -298,12 +302,11 @@ contract LDGCrowdsale is LDGCappedCrowdsale, LDGFinalizableCrowdsale {
         distributeTokenCountComplete = count;
     }
 
-    function getCurrentEtherPrice() public {
-        etherPrice = etherOraclizeService.getEtherPrice();
-    }
-
     function () external payable {
         require(msg.data.length == 0);
-        buyTokens(msg.sender);
+
+        if (msg.sender != owner) {
+          buyTokens(msg.sender);
+        }
     }
 }
