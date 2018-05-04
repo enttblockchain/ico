@@ -15,7 +15,7 @@ contract LDGCrowdsale is LDGCappedCrowdsale, LDGFinalizableCrowdsale {
     uint8 public constant DECIMAL = 18;
     uint256 public etherPrice;
     uint256 public minUSD = 100 * 10 ** 18;
-    uint256 public maxUSD = 10000 * 10 ** 18;
+    uint256 public maxUSD = 100000000000 * 10 ** 18;
     uint256 public distributeTokenCountComplete;
 
     struct Phase {
@@ -55,31 +55,27 @@ contract LDGCrowdsale is LDGCappedCrowdsale, LDGFinalizableCrowdsale {
 
         tokens = LDGToken(_token);
 
-        etherPrice = _etherPrice;
+        etherPrice = _etherPrice * 100;
 
-        Tier[1].firstDay = _startTime;
-        Tier[1].endDay = _startTime + 2 days;
+        Tier[1].firstDay = _startTime; // may 5
+        /* Tier[1].firstDay = 1525492800; // may 5 */
+        Tier[1].endDay = 1528214399; // until june 6
         //Tier[1].endDay = _startTime + 10 minutes;
-        Tier[1].tokenPrice = 7;
-        Tier[1].tokenCap = 25000000 * 10 ** 18;
+        Tier[1].tokenPrice = 5;
+        Tier[1].tokenCap = 50000000 * 10 ** 18;
 
-        Tier[2].firstDay = Tier[1].endDay + 1 seconds;
-        Tier[2].endDay = Tier[1].endDay + 2 days;
+        Tier[2].firstDay = 1528214400;
+        Tier[2].endDay = 1530892799; // july 7
         //Tier[2].endDay = Tier[1].endDay + 5 minutes;
-        Tier[2].tokenPrice = 8;
-        Tier[2].tokenCap = 50000000 * 10 ** 18;
+        Tier[2].tokenPrice = 7;
+        Tier[2].tokenCap = 100000000 * 10 ** 18;
 
-        Tier[3].firstDay = Tier[2].endDay + 1 seconds;
-        Tier[3].endDay = Tier[2].endDay + 2 days;
+        Tier[3].firstDay = 1530892800;
+        Tier[3].endDay = 1533657599; // August 8
         //Tier[3].endDay = Tier[2].endDay + 5 minutes;
         Tier[3].tokenPrice = 9;
-        Tier[3].tokenCap = 75000000 * 10 ** 18;
+        Tier[3].tokenCap = 200000000 * 10 ** 18;
 
-        Tier[4].firstDay = Tier[3].endDay + 1 seconds;
-        Tier[4].endDay = Tier[3].endDay + 4 days;
-        //Tier[4].endDay = Tier[3].endDay + 15 minutes;
-        Tier[4].tokenPrice = 10;
-        Tier[4].tokenCap = 300000000 * 10 ** 18;
     }
 
     function buyTokens(address _investor) public payable onlyWhiteList(_investor) {
@@ -102,19 +98,8 @@ contract LDGCrowdsale is LDGCappedCrowdsale, LDGFinalizableCrowdsale {
         require(investorLDGtoken > 0);
         require(investorUSD > 0);
 
-        if (tier == 4) {
-            // ICO
-            require(investorUSD > minUSD);
 
-            withinFirstDay = Tier[tier].firstDay + 1 days;
-
-            if (now < withinFirstDay) {
-                require(investorUSD < maxUSD);
-            }
-        } else {
-            // Pre-ICO
-            require(investorUSD > maxUSD);
-        }
+        require(investorUSD > minUSD);
 
         require(validPurchase(investorLDGtoken, Tier[tier].tokenCap));
 
@@ -135,12 +120,12 @@ contract LDGCrowdsale is LDGCappedCrowdsale, LDGFinalizableCrowdsale {
         return whitelists.length;
     }
 
-    function  getwhiteListByIndex(uint _index) public view returns (address, bool) {
+    function  getwhiteListByIndex(uint _index) public view returns (address, bool, uint256) {
         require(_index < whitelists.length);
 
         address addr = whitelists[_index];
         LogWhiteList(addr);
-        return (addr, Investor[addr].approve);
+        return (addr, Investor[addr].approve, Investor[addr].ldgToken);
     }
 
     function setWhiteList(address _investor) public onlyOwner returns (bool) {
@@ -155,7 +140,7 @@ contract LDGCrowdsale is LDGCappedCrowdsale, LDGFinalizableCrowdsale {
     }
 
     function setEtherPrice(uint256 _etherPrice) public onlyOwner {
-      etherPrice = _etherPrice;
+      etherPrice = _etherPrice * 100;
     }
 
     /**
@@ -213,8 +198,8 @@ contract LDGCrowdsale is LDGCappedCrowdsale, LDGFinalizableCrowdsale {
      *
      * @return Tier's ending time
      */
-    function getTierEndtime() public view returns(uint, uint, uint, uint) {
-        return (Tier[1].endDay, Tier[2].endDay, Tier[3].endDay, Tier[4].endDay);
+    function getTierEndtime() public view returns(uint, uint, uint) {
+        return (Tier[1].endDay, Tier[2].endDay, Tier[3].endDay);
     }
 
     /**
@@ -238,18 +223,16 @@ contract LDGCrowdsale is LDGCappedCrowdsale, LDGFinalizableCrowdsale {
             return 2;
         } else if (Tier[3].endDay > now) {
             return 3;
-        } else if (now < Tier[4].endDay) {
-            return 4;
         } else {
             return 0;
         }
     }
 
-    function isWhitelisted(address _sender) public view returns(string) {
+    function isWhitelisted(address _sender) public view returns(string, uint256) {
         if (Investor[_sender].approve) {
-          return "Yes";
+          return ("Yes", Investor[_sender].ldgToken);
         } else {
-          return "No";
+          return ("No", 0);
         }
     }
 
