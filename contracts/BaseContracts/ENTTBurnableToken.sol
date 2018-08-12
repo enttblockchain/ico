@@ -1,12 +1,12 @@
-/// @file LDG Burnable Token Contract
-/// LDG Burnable Token Contract is based on Open Zeppelin
+/// @file ENTT Burnable Token Contract
+/// ENTT Burnable Token Contract is based on Open Zeppelin
 /// and modified
 
 pragma solidity 0.4.19;
 
-import './LDGBasicToken.sol';
+import './ENTTBasicToken.sol';
 
-contract LDGBurnableToken is LDGBasicToken {
+contract ENTTBurnableToken is ENTTBasicToken {
     event Burn(address indexed burner, uint256 value);
 
     /**

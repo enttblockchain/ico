@@ -1,13 +1,13 @@
-/// @file LDG Finalizable Crowdsale Contract
-/// @notice LDG Finalizable Crowdsale Contract is based on Open Zeppelin
-//// and extend LDG Base Crowdsale
+/// @file ENTT Finalizable Crowdsale Contract
+/// @notice ENTT Finalizable Crowdsale Contract is based on Open Zeppelin
+//// and extend ENTT Base Crowdsale
 pragma solidity 0.4.19;
 
 import '../../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
 import '../../node_modules/zeppelin-solidity/contracts/ownership/Claimable.sol';
-import './LDGBaseCrowdsale.sol';
+import './ENTTBaseCrowdsale.sol';
 
-contract LDGFinalizableCrowdsale is LDGBaseCrowdsale, Claimable {
+contract ENTTFinalizableCrowdsale is ENTTBaseCrowdsale, Claimable {
     using SafeMath for uint256;
 
     bool public isFinalized = false;
@@ -15,7 +15,7 @@ contract LDGFinalizableCrowdsale is LDGBaseCrowdsale, Claimable {
     event Closed();
     event Finalized();
 
-    function LDGFinalizableCrowdsale() {
+    function ENTTFinalizableCrowdsale() {
     }
 
     function finalize() onlyOwner public {
