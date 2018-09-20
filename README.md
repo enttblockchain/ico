@@ -1,4 +1,4 @@
-# Ledgit PRE ICO Smart Contract
+# ENTT PRE ICO Smart Contract
 
 ## ToDo
 ___
